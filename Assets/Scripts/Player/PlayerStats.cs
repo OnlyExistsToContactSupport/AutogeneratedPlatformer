@@ -8,10 +8,10 @@ public static class PlayerStats
     // Adicionar pontos
     // Adicionar munições e armas
 
-    public static float forçaDeSalto = 5f;
-    public static float velocidade = 5f;
-    public static float vida = 100f;
-    public static float dano = 5f;
+    public static float forçaDeSalto = 0f;
+    public static float velocidade = 0f;
+    public static float vida = 0f;
+    public static float dano = 0f;
     public static float munição = 0f;
     public static bool chanceNaoGastarMunição = false;
 
