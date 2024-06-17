@@ -10,4 +10,5 @@ public interface IEnemyBehaviour
     public void ChasePlayer();
     public void AttackPlayer();
     public void TakeDamage(float damage);
+    public void DealDamage();
 }

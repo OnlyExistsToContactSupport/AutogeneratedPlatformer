@@ -60,19 +60,24 @@
     <Analyzer Include="D:\Softwares\Unity\Editors\2022.3.21f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Enemy\DragonExample.cs" />
     <Compile Include="Assets\Scripts\NPC\DialogueController.cs" />
     <Compile Include="Assets\Scripts\NPC\Boss.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\Enemy\EnemyGroundMovement.cs" />
+    <Compile Include="Assets\Scripts\Enemy\WaterEnemy.cs" />
     <Compile Include="Assets\Scripts\Player\ActiveBuffs.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyBehaviour.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
+    <Compile Include="Assets\Scripts\Platforms\PlatformType.cs" />
     <Compile Include="Assets\Scripts\UI\ScrollingUVs.cs" />
+    <Compile Include="Assets\Scripts\UI\ScrollEndPlatform.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Player\Interactor.cs" />
+    <Compile Include="Assets\Scripts\Platforms\SpawnPlatforms.cs" />
+    <Compile Include="Assets\Scripts\Enemy\GroundEnemy.cs" />
+    <Compile Include="Assets\Scripts\Enemy\AirEnemy.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
-    <Compile Include="Assets\RedDragon 1.2\Assets\Scripts\DragonExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -81,6 +86,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\QuickOutline\Resources\Shaders\OutlineMask.shader" />
+    <None Include="Assets\Objects\Water\Shader\Water_Ocean_03.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
