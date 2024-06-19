@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,7 +35,21 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.AddComponent<NavMeshAgent>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.baseOffset = 0;
+        navMeshAgent.speed = 3.5f;
+        navMeshAgent.angularSpeed = 120f;
+        navMeshAgent.acceleration = 8f;
+        navMeshAgent.stoppingDistance = 0f;
+        navMeshAgent.autoBraking = true;
+        navMeshAgent.radius = 0.5f;
+        navMeshAgent.height = 2.2f;
+        navMeshAgent.avoidancePriority = 50;
+        navMeshAgent.autoTraverseOffMeshLink = true;
+        navMeshAgent.autoRepath = true;
+
+
         waypointIndex = 0;
         currentWaypointPosition = waypoints[waypointIndex].position;
         navMeshAgent.SetDestination(currentWaypointPosition);
