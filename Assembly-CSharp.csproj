@@ -62,12 +62,14 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Enemy\DragonExample.cs" />
     <Compile Include="Assets\Scripts\NPC\DialogueController.cs" />
+    <Compile Include="Assets\Low Poly Guns\Scripts\GunView.cs" />
     <Compile Include="Assets\Scripts\NPC\Boss.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Enemy\WaterEnemy.cs" />
     <Compile Include="Assets\Scripts\Player\ActiveBuffs.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyHealthBar.cs" />
+    <Compile Include="Assets\Scripts\Player\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyBehaviour.cs" />
     <Compile Include="Assets\Scripts\Enemy\WaterEnemyAttack.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Assets\Scripts\Player\PlayerWeapons.cs" />
     <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Enemy\GroundEnemy.cs" />
+    <Compile Include="Assets\Low Poly Guns\Scripts\GunsMenu.cs" />
     <Compile Include="Assets\Scripts\Enemy\AirEnemy.cs" />
     <Compile Include="Assets\Scripts\Platforms\BakeWalkableSpace.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />

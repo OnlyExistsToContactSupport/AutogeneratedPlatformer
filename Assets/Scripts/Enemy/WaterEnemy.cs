@@ -146,12 +146,26 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     // Olhar para o player
     public void ChasePlayer()
     {
-        transform.LookAt(player);
+        // Calculate the direction to the player
+        Vector3 direction = player.position - transform.position;
+
+        // Zero out the Y component of the direction to keep the rotation around the Y axis only
+        direction.y = 0;
+
+        // Check if the direction is not zero to avoid NaN results when normalizing
+        if (direction != Vector3.zero)
+        {
+            // Calculate the rotation needed to look at the player
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+            // Apply the rotation, but only affect the Y axis
+            transform.rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+        }
     }
     // Chamado pelo ataque do inimigo (script à parte)
     public void DealDamage()
     {
-        GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().PerderVida(EnemyDamage.waterEnemyDamage);
+        GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(EnemyDamage.waterEnemyDamage);
     }
 
 

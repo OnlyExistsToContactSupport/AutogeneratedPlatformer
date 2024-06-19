@@ -14,19 +14,7 @@ public class HealthBar : MonoBehaviour
 
     public bool perderVida = false;
 
-    private void Update()
-    {
-        VerificarMorte();
-
-        if (perderVida)
-        {
-            // Perde 5% de vida
-            PerderVida(5);
-            perderVida = !perderVida;
-        }
-        
-    }
-    public void PerderVida(float dano)
+    public void TakeDamage(float dano)
     {
         // Para perder vida em percentagem precisamos de fazer a conta:
         // O dano é calculado de 0% a 100%, e como 100% da vida é 1006, temos:
@@ -36,11 +24,8 @@ public class HealthBar : MonoBehaviour
 
         overlayBar.sizeDelta = new Vector2(overlayBar.sizeDelta.x + percentagemDano, overlayBar.sizeDelta.y);
     }
-    public void VerificarMorte()
+    public bool VerificarMorte()
     {
-        if(overlayBar.sizeDelta.x >= 1006)
-        {
-            // TODO fazer coisas caso morte
-        }
+        return overlayBar.sizeDelta.x >= 1006;
     }
 }

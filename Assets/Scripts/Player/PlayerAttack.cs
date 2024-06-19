@@ -84,21 +84,10 @@ public class PlayerAttack : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        switch (other.tag)
+        if(other.tag.Equals("AirEnemy") || other.tag.Equals("GroundEnemy") || other.tag.Equals("WaterEnemy"))
         {
-            case "AirEnemy":
-                enemy = null;
-                enemyTag = string.Empty;
-                break;
-            case "GroundEnemy":
-                enemy = null;
-                enemyTag = string.Empty;
-                break;
-            case "WaterEnemy":
-                enemy = null;
-                enemyTag = string.Empty;
-                break;
+            enemy = null;
+            enemyTag = string.Empty;
         }
     }
-
 }

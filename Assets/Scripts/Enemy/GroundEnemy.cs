@@ -207,7 +207,7 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
         // Como é ataque melee, tem de se verificar se o player está em range
         if(isPlayerInAttackRange)
         {
-            GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().PerderVida(EnemyDamage.groundEnemyDamage);
+            GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(EnemyDamage.groundEnemyDamage);
         }
 
     }

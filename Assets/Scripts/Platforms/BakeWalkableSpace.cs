@@ -13,7 +13,6 @@ public class BakeWalkableSpace : MonoBehaviour
         {
             // Build the NavMesh at runtime
             navMeshSurface.BuildNavMesh();
-            Debug.Log("NavMesh baked at runtime.");
         }
         else
         {

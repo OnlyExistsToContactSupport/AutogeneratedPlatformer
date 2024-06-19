@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerWeapons : MonoBehaviour
+public static class PlayerWeapons
 {
     public enum WeaponType
     {
@@ -11,27 +11,34 @@ public class PlayerWeapons : MonoBehaviour
         Gun
     }
     // Arma que o jogador tem
-    private WeaponType activeWeapon;
+    private static WeaponType activeWeapon = WeaponType.Sword;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        activeWeapon = WeaponType.Punch;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SetActiveWeapon(WeaponType type)
+    public static void SetActiveWeapon(WeaponType type)
     {
         activeWeapon = type;
+        // Ativar a arma
+        switch(type)
+        {
+            // Quando não tem arma
+            case WeaponType.Punch:
+                GameObject.FindGameObjectWithTag("Sword").gameObject.SetActive(false);
+                GameObject.FindGameObjectWithTag("Gun").gameObject.SetActive(false);
+                break;
+            // Espada dentro da mão direita do jogador
+            case WeaponType.Sword:
+                GameObject.FindGameObjectWithTag("Sword").gameObject.SetActive(true);
+                GameObject.FindGameObjectWithTag("Gun").gameObject.SetActive(false);
+                break;
+            // Pistola dentro da mão direita do jogador
+            case WeaponType.Gun:
+                GameObject.FindGameObjectWithTag("Sword").gameObject.SetActive(false);
+                GameObject.FindGameObjectWithTag("Gun").gameObject.SetActive(true);
+                break;
+        }
     }
 
 
-    public WeaponType GetActiveWeapon()
+    public static WeaponType GetActiveWeapon()
     {
         return activeWeapon;
     }

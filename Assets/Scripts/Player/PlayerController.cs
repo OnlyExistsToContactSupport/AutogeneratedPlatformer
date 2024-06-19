@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
 
+    public bool canMove;
+
 
     private void Start()
     {
@@ -44,31 +46,27 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
 
         readyToJump = true;
+        canMove = true;
     }
 
     private void Update()
     {
-        if (!DialogueController.isDialogue)
+        // Se não estiver a falar com npc ou não estiver em pausa
+        if (!DialogueController.isDialogue || Time.timeScale > 0f)
         {
-            // Se não estiver em pausa
-            if(Time.timeScale > 0f)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
+            if(canMove) {
                 ProcessInput();
                 SpeedControl();
+                MovePlayer();
 
                 // handle drag
                 if (canJump)
                     rb.drag = groundDrag;
                 else
-                    rb.drag = 0;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                    rb.drag = 0; 
             }
 
         }
@@ -98,24 +96,11 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
-    {
-        MovePlayer();
-    }
-
     private void ProcessInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (horizontalInput != 0 || verticalInput != 0)
-        {
-            animator.Play("Walk");
-        }
-        else
-        {
-            animator.Play("Idle");
-        }
         // when to jump
         if (Input.GetKey(jumpKey) && readyToJump && canJump)
         {
