@@ -32,7 +32,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        if (!DialogueController.isDialogue)
+        // Se não estiver a falar com um npc ou se não estiver em pausa
+        if (!DialogueController.isDialogue || Time.timeScale > 0)
         {
             MoveCamera();
         }

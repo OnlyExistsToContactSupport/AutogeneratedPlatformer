@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AirEnemy : MonoBehaviour, IEnemyBehaviour
 {
+    private EnemyHealthBar healthBar;
+
     public void AttackPlayer()
     {
         throw new System.NotImplementedException();
@@ -26,13 +28,15 @@ public class AirEnemy : MonoBehaviour, IEnemyBehaviour
 
     public void TakeDamage(float damage)
     {
-        throw new System.NotImplementedException();
+        healthBar.TakeDamage(damage);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+        healthBar.SetMaxHealth(healthBar.airEnemyMaxHealth);
+
     }
 
     // Update is called once per frame

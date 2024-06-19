@@ -8,6 +8,7 @@ public class PlatformTypes : MonoBehaviour
     public GameObject grassPlatform;
     public GameObject waterPlatform;
     public GameObject firePlatform;
+    public GameObject ceilingPlatform;
 
     private void Start()
     {

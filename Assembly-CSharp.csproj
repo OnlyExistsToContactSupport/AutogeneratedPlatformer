@@ -67,16 +67,23 @@
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Enemy\WaterEnemy.cs" />
     <Compile Include="Assets\Scripts\Player\ActiveBuffs.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyHealthBar.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Enemy\WaterEnemyAttack.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Platforms\PlatformType.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerAttack.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyDamage.cs" />
     <Compile Include="Assets\Scripts\UI\ScrollingUVs.cs" />
     <Compile Include="Assets\Scripts\UI\ScrollEndPlatform.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Player\Interactor.cs" />
     <Compile Include="Assets\Scripts\Platforms\SpawnPlatforms.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerWeapons.cs" />
+    <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Enemy\GroundEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemy\AirEnemy.cs" />
+    <Compile Include="Assets\Scripts\Platforms\BakeWalkableSpace.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
   </ItemGroup>
   <ItemGroup>

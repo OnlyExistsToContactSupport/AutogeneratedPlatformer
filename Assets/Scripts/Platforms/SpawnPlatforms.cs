@@ -143,16 +143,16 @@ public class SpawnPlatforms : MonoBehaviour
             //xDist *= mainDir.x;
             //zDist *= mainDir.y;
             //Debug.Log("After mainDir multiplication xDist = " + xDist + " zDist = " + zDist);
-            Debug.Log("xDist = " + xDist + " zDist = " + zDist);
-            Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
-            Debug.Log("NewPosition = " + (x + xDist * mainDir.x) + ", " + (y - yDist) + ", " + (z + zDist * mainDir.y));
-            Debug.Log("Limit Check Starting.... for xMax = " + maxX + " and zMax = " + maxZ);
+            //Debug.Log("xDist = " + xDist + " zDist = " + zDist);
+            //Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
+            //Debug.Log("NewPosition = " + (x + xDist * mainDir.x) + ", " + (y - yDist) + ", " + (z + zDist * mainDir.y));
+            //Debug.Log("Limit Check Starting.... for xMax = " + maxX + " and zMax = " + maxZ);
             float newX = x + xDist * mainDir.x;
             float newZ = z + zDist * mainDir.y;
             if (Math.Abs(newX) > maxX || Math.Abs(newZ) > maxZ)
             {
                 Vector2 auxDir = mainDir;
-                Debug.Log("New x = " + newX + " New z = " + newZ);
+                //Debug.Log("New x = " + newX + " New z = " + newZ);
                 while (Math.Abs(newX) > maxX || Math.Abs(newZ) > maxZ)
                 {
                     mainDir = directions[Random.Range(0, 7)];
@@ -246,7 +246,7 @@ public class SpawnPlatforms : MonoBehaviour
             //z = Random.Range(LastPlatform.z - zDistance, LastPlatform.z + zDistance);
             Vector3 nextPosition = new Vector3(x = newX, y = y - yDist, z = newZ);
             //Vector3 nextPosition = new Vector3(x = x+xDist, y = y - yDist,z= z+zDist);
-            Debug.Log("Next position = " + nextPosition.x + ", " + nextPosition.y + ", " + nextPosition.z);
+            //Debug.Log("Next position = " + nextPosition.x + ", " + nextPosition.y + ", " + nextPosition.z);
             //Vector3 nextPosition = new Vector3(x = Random.Range(Math.Max(x - 15, min - 50), Math.Min(x + 15, max - 50)), y = y - dif, z = Random.Range(Math.Max(z - 15, min - 50), Math.Min(z + 15, max - 50)));
             Instantiate(Platform, nextPosition, Quaternion.identity);
             //Debug.Log("Next position = " + nextPosition.x + ", " + nextPosition.y + ", " + nextPosition.z);
@@ -260,7 +260,7 @@ public class SpawnPlatforms : MonoBehaviour
             {
                 //20% de chance de mudar de direção
                 mainDir = directions[Random.Range(0, 7)];
-                Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
+                //Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
             }
         }
 

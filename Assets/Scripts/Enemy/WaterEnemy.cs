@@ -19,6 +19,7 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     // Animações
     private Animator animator;
 
+    private EnemyHealthBar healthBar;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,9 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
         fovAngle = 360;
 
         animator = GetComponent<Animator>();
+
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+        healthBar.SetMaxHealth(healthBar.waterEnemyMaxHealth);
     }
 
     // Update is called once per frame
@@ -70,7 +74,6 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
                 animator.SetBool("isSeeingPlayer", true);
                 animator.SetBool("isAttacking", true);
 
-                Invoke("SpawnAttack", GetAnimationTime("AttackAnimation"));
 
                 // Voltar a atacar passado algum tempo(2 segundos)
                 Invoke(nameof(ResetAttack), 2f);
@@ -87,9 +90,26 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
                     GetAnimationTime("StandUpAnimation")));
         }
     }
+    // Chamado pela animação
     private void SpawnAttack()
     {
-        Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+        // Mão do inimigo
+
+        Transform handTransform = transform
+                                    .GetChild(0)  // Model
+                                    .GetChild(0)  // Hips
+                                    .GetChild(2)  // Spine
+                                    .GetChild(0)  // Spine1
+                                    .GetChild(0)  // Spine2
+                                    .GetChild(0)  // LeftShoulder
+                                    .GetChild(0)  // LeftArm
+                                    .GetChild(0)  // LeftForearm
+                                    .GetChild(0)  // LeftHand
+                                    .GetChild(2);  // LeftHandPinky
+                                     
+
+        // Instancia o ataque em direção ao player
+        Rigidbody rb = Instantiate(projectile, handTransform.position, Quaternion.identity).GetComponent<Rigidbody>();
         rb.AddForce(transform.forward * 50f, ForceMode.Impulse);
 
         hasAttacked = true;
@@ -123,31 +143,21 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
         hasAttacked = false;
         animator.SetBool("isAttacking", false);
     }
-    // Olhar para o player (cabeça only para ser mais creepy)
+    // Olhar para o player
     public void ChasePlayer()
     {
-        // WaterEnemy - Model - Hips - Spine - Spine1 - Spine2 - Neck - Head
-        Transform headTransform = transform
-                                    .GetChild(0)  // Model
-                                    .GetChild(0)  // Hips
-                                    .GetChild(2)  // Spine
-                                    .GetChild(0)  // Spine1
-                                    .GetChild(0)  // Spine2
-                                    .GetChild(1)  // Neck
-                                    .GetChild(0); // Head
-
-        headTransform.LookAt(player);
+        transform.LookAt(player);
     }
-
+    // Chamado pelo ataque do inimigo (script à parte)
     public void DealDamage()
     {
-        throw new System.NotImplementedException();
+        GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().PerderVida(EnemyDamage.waterEnemyDamage);
     }
 
 
     public void TakeDamage(float damage)
     {
-        throw new System.NotImplementedException();
+        healthBar.TakeDamage(damage);
     }
     private bool CanSeePlayer()
     {

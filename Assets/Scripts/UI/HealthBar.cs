@@ -32,6 +32,7 @@ public class HealthBar : MonoBehaviour
         // O dano é calculado de 0% a 100%, e como 100% da vida é 1006, temos:
         float percentagemDano = (dano / 100) * 1006;
 
+        Debug.Log("dano: " + percentagemDano);
 
         overlayBar.sizeDelta = new Vector2(overlayBar.sizeDelta.x + percentagemDano, overlayBar.sizeDelta.y);
     }

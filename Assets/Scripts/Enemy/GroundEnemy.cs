@@ -16,19 +16,19 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
 
     // Chase
     private Transform player;
-    public bool isPlayerInSightRange;
+    private bool isPlayerInSightRange;
     private float sightRange;
     private int fovAngle;
     private float chaseSpeed;
 
     //Attack
-    private float attackRange;
-    public bool isPlayerInAttackRange;
-    public GameObject projectile;
+    private bool isPlayerInAttackRange;
     private bool hasAttacked;
 
     // Animações
     private Animator animator;
+
+    private EnemyHealthBar healthBar;
 
 
     // Start is called before the first frame update
@@ -47,8 +47,7 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
 
         // Visão do player
         sightRange = 40;
-        // Range de ataque
-        attackRange = 5;
+
         // Angulo de visão
         fovAngle = 100;
 
@@ -56,13 +55,15 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
         chaseSpeed = 5f;
 
         animator = GetComponent<Animator>();
+
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+        healthBar.SetMaxHealth(healthBar.groundEnemyMaxHealth);
     }
 
     // Update is called once per frame
     void Update()
     {
         CanSeePlayer();
-        CanAttackPlayer();
 
         if (!isPlayerInSightRange && !isPlayerInAttackRange)
         {
@@ -125,6 +126,8 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
     public void AttackPlayer()
     {
         // Parar de mexer
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
         navMeshAgent.SetDestination(transform.position);
     
         transform.LookAt(player);
@@ -132,6 +135,8 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
         if (!hasAttacked)
         {
             animator.Play("Attack");
+                        
+            hasAttacked = true; // Set hasAttacked to true after dealing damage
 
             // Voltar a atacar passado algum tempo (2 segundos)
             Invoke(nameof(ResetAttack), 2f);
@@ -144,12 +149,11 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
     }
     public void TakeDamage(float damage)
     {
-
+        healthBar.TakeDamage(damage);
     }
+    // Desenhar visão do inimigo (Debug)
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
     }
@@ -181,13 +185,25 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
 
         isPlayerInSightRange = playerFound;
     }
-    private void CanAttackPlayer()
-    {
-        isPlayerInAttackRange = Vector3.Distance(transform.position, player.position) <= attackRange;
-    }
 
+    // Chamado pela animação
     public void DealDamage()
     {
-        throw new NotImplementedException();
+        // Como é ataque melee, tem de se verificar se o player está em range
+        if(isPlayerInAttackRange)
+        {
+            GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().PerderVida(EnemyDamage.groundEnemyDamage);
+        }
+
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Equals("Player"))
+            isPlayerInAttackRange = true;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.Equals("Player"))
+            isPlayerInAttackRange = false;
     }
 }

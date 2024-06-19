@@ -50,17 +50,27 @@ public class PlayerController : MonoBehaviour
     {
         if (!DialogueController.isDialogue)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            // Se não estiver em pausa
+            if(Time.timeScale > 0f)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
 
-            ProcessInput();
-            SpeedControl();
+                ProcessInput();
+                SpeedControl();
 
-            // handle drag
-            if (canJump)
-                rb.drag = groundDrag;
+                // handle drag
+                if (canJump)
+                    rb.drag = groundDrag;
+                else
+                    rb.drag = 0;
+            }
             else
-                rb.drag = 0;
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
         }
         else
         {
