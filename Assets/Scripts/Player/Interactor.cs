@@ -23,7 +23,7 @@ public class Interactor : MonoBehaviour
         Ray ray = new Ray(source.position, source.forward);
         Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(PlayerStats.interactKey))
         {
             if(Physics.Raycast(ray, out RaycastHit hit, distance))
             {

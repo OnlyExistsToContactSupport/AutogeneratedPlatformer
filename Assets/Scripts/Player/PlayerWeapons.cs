@@ -11,7 +11,7 @@ public static class PlayerWeapons
         Gun
     }
     // Arma que o jogador tem
-    private static WeaponType activeWeapon = WeaponType.Punch;
+    private static WeaponType activeWeapon;
 
     // Dano em percentagem
     public static int punchDamage = 5;

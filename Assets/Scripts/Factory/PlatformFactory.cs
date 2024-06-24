@@ -1,70 +1,117 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 public class PlatformFactory : ScriptableObject
 {
     //-50/50x,z 0/100y
-    //Platform size = 10x10x1
-    //5x5x0.5 from de center
+    //Platform size = 15x15x1
+    //7.5x7.5x0.5 from de center
 
-    public GameObject Platform;
 
-    public int maxStart = 80;
-    public int minStart = 60;
+    //Min and Max values for the ending platform, which is the start of the created path
+    private int maxStart;
+    private int minStart;
 
     //O valor MAX para as coordenadas x e z pode ser fora da caixa, mas apenas o suficiente para conseguir ter uma parte dentro do mapa.
     //Isto cria apenas um pouco de dificuldade extra pois existe menos espaço de manobra, não dificultando demasiado!
-    public float maxX = 55f;//42.5f;
-    public float maxZ = 55f;//42.5f;
-    //System.Random rnd = new System.Random();
-    public int value;
-    public float x, y, z = 0;
-    public int testar;
-    public int maxPlatforms = 20;
-    public int dificulty = 1;
-    public int PlatformID = 0;
+    private float maxHorizontalPosition;
 
-    public float MaxDistanceHorizontal = 21.169f;
-    public float MaxDistanceVertical = 8.35f;
-    //public float MinDistHor = 21.213f; //valor minimo para as plataformas não se sobreporem com y = 0;
-    private Vector2[] directions = new Vector2[]
-    {
-        new (0, 1),  // Up
-        new (0, -1), // Down
-        new (-1, 0), // Left
-        new (1, 0),  // Right
-        new (-1, 1), // Up-Left
-        new (1, 1),  // Up-Right
-        new (-1, -1),// Down-Left
-        new (1, -1)  // Down-Right
-    };
+    //Distância máxima de salto
+    private float MaxDistanceHorizontal;
+    private float MaxDistanceVertical;
 
+    //Variáveis para as posições das plataformas
+    private Vector3 nextPosition;
+    private Vector3 InitPosition;
     private Vector3 LastPlatform;
-    private Vector3[] PlatformsPositions;
-    int PlatformIndex = 0;
-    public void GeneratePlatforms(PlatformTypes platformTypes)
-    {
-        Platform = platformTypes.grassPlatform;
-        PlatformsPositions = new Vector3[maxPlatforms];
 
-        float MDSquared = MaxDistanceHorizontal * MaxDistanceHorizontal;
-        //Getting the Platform's size
-        Renderer renderer = Platform.GetComponent<Renderer>();
-        Vector3 size = renderer.bounds.size;
-        float width = size.x; // Largura (eixo X)
-        float height = size.y; // Altura (eixo Y)
-        float depth = size.z; // Profundidade (eixo Z)
+    //Variáveis para as direções possíveis
+    private Vector2 mainDir;
+    private Vector2[] directions;
+
+    //Variável para guardar as posições das plataformas
+    public List<Vector3> PlatformsPositions;
+
+    //Variáveis para o controlo do número de plataformas
+    private int PlatformIndex;
+    private int maxPlatforms;
+
+    private float yDist;
+    private float distModifier;
+    private float auxDif;
+
+    private float MDSquared;
+
+    private int startPosX;
+    private int startPosZ;
+    private float startPosY;
+
+    private float xDist;
+    private float xSquared;
+    private float zDist;
+
+    private float newX;
+    private float newZ;
+
+    public void GeneratePlatforms(PlatformTypes platformTypes, GameObject player)
+    {
+        maxStart = 90;//Valores max e min para
+        minStart = 80;//a posição inicial da primeira plataforma
+
+        maxHorizontalPosition = 55f;//Valor máximo para as coordenadas x e z para a plataforma ficar dentro da àrea de jogo
+        MaxDistanceHorizontal = 20f;//Distância máxima horizontal de salto
+        MaxDistanceVertical = 7.4f;//Distância máxima vertical de salto
+
+        //Controlos do número de plataformas
+        maxPlatforms = 30;
+        PlatformIndex = 0;
+
+        //Vetor das direções possíveis
+        directions = new Vector2[]
+        {
+            new (0, 1),  // Up
+            new (0, -1), // Down
+            new (-1, 0), // Left
+            new (1, 0),  // Right
+            new (-1, 1), // Up-Left
+            new (1, 1),  // Up-Right
+            new (-1, -1),// Down-Left
+            new (1, -1)  // Down-Right
+        };
+        mainDir = new Vector2(0, 0);
+
+        InitPosition = new Vector3(0, 0, 0);
+        nextPosition = new Vector3(0, 0, 0);
+        LastPlatform = new Vector3(0, 0, 0);
+
+        PlatformsPositions = new List<Vector3>();
+
+        //Controls for the maximum distance between platforms
+        yDist = 0;
+        distModifier = 0;
+        auxDif = 0;
+
+        xDist = 0;
+        xSquared = 0;
+        zDist = 0;
+
+        newX = 0;
+        newZ = 0;
+
+        //Calculating the square of the maximum distance between platforms for the Pythagorean theorem
+        MDSquared = MaxDistanceHorizontal * MaxDistanceHorizontal;
 
         //Getting random parameters for the first platform
-        int startPosX = Random.Range(-1, 1);
-        int startPosZ = Random.Range(-1, 1);
-        float startPosY = Random.Range(minStart, maxStart);
-        Vector2 mainDir;
+        startPosX = Random.Range(-1, 1);
+        startPosZ = Random.Range(-1, 1);
+        startPosY = Random.Range(minStart, maxStart);
 
-        //Getting a main direction for the path
+        //Getting a main direction for the path based on the initial position
         if (startPosX == 0 && startPosZ == 0)
         {
             mainDir = directions[Random.Range(0, 7)];
@@ -73,209 +120,190 @@ public class PlatformFactory : ScriptableObject
         {
             mainDir = new Vector2(-startPosX, -startPosZ);
         }
-        //Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
 
-        //Creating the first platform on one of the 9 possible positions
-        Vector3 InitPosition = new Vector3(x = maxX * startPosX, y = startPosY, z = maxZ * startPosZ);
+        //Creating the first platform on one of the 9 possible positions, after having the height
+        InitPosition = new Vector3(42.5f * startPosX, startPosY, 42.5f * startPosZ);
         LastPlatform = InitPosition;
 
+        //SpawnPlatform(InitPosition);
+        //GameObject Plataforma = Instantiate(Platform, InitPosition, Quaternion.identity);
+        //Plataforma.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, 0);
 
+        // TODO - Criar uma lista para guardar as posições das plataformas
 
-        Instantiate(platformTypes.grassPlatform, InitPosition, Quaternion.identity);
-        PlatformsPositions[PlatformIndex] = LastPlatform;
+        PlatformsPositions.Add(LastPlatform);//[PlatformIndex] = LastPlatform;
         PlatformIndex++;
         maxPlatforms--;
 
-        float yDist;// = Random.Range(0, MaxDistanceVertical);
-        //float dif;// = y / maxPlatforms;
-        float distModifier;// = dif / MaxDistanceVertical / 2;
-                           //MaxDistanceHorizontal = MaxDistanceHorizontal * distModifier + 15;
 
-
-        for (; maxPlatforms > 0; maxPlatforms--)
+        //Loop para criar o path de plataformas
+        for (; maxPlatforms > 0 && LastPlatform.y > MaxDistanceVertical; maxPlatforms--)
         {
-            if (y < MaxDistanceVertical)
-                break;
 
-
-            //Verifica se é possível chegar ao chão
             yDist = Random.Range(4, MaxDistanceVertical);
-            float auxDif = (y - yDist - MaxDistanceVertical) / (maxPlatforms - 1);
-            //Debug.Log("yDist= " + yDist + " auxDif = " + auxDif);
-            if (auxDif > MaxDistanceVertical)
-            {//Caso não seja, ajusta a distância
-                while (auxDif > MaxDistanceVertical)
+            auxDif = (LastPlatform.y - yDist - MaxDistanceVertical) / (maxPlatforms - 1);
+
+            if (auxDif > MaxDistanceVertical)//Verifica se é possível chegar ao chão
+            {
+                while (auxDif > MaxDistanceVertical)//Caso não seja, ajusta a distância
                 {
                     yDist = Random.Range(yDist, MaxDistanceVertical);
-                    auxDif = (y - yDist - MaxDistanceVertical) / (maxPlatforms - 1);
+                    auxDif = (LastPlatform.y - yDist - MaxDistanceVertical) / (maxPlatforms - 1);
                 }
-                //Debug.Log("Inside Loop: yDist= " + yDist + " auxDif = " + auxDif);
             }
 
             //Modificador de distância máxima entre plataformas, consoante a altura da plataforma
             distModifier = yDist / MaxDistanceVertical / 2;
             MaxDistanceHorizontal = MaxDistanceHorizontal * distModifier + 15;
-            //Debug.Log("distModifier = " + distModifier + " MaxDistanceHorizontal = " + MaxDistanceHorizontal);
+            //15 é o metade de cada plataforma, pois é necessário considerar esta distância para a distância máxima entre plataformas
+            //Uma vez que as posições utilizadas são as do centro das plataformas
 
-            //Calcula uma distância possível para a próxima plataforma
-            float xDist = Random.Range(15f, MaxDistanceHorizontal);//x Distance
-
-            float xSquared = xDist * xDist;
-            //Debug.Log("xDist = " + xDist + " xSquared = " + xSquared + " MDSquared = " + MDSquared);
-            float zDist = 15f;
+            //Calcula uma distância possível para a próxima plataforma pelo teorema de Pitágoras x^2 + z^2 = MDSquared
+            xDist = Random.Range(15f, MaxDistanceHorizontal);//x Distance
+            xSquared = xDist * xDist;
+            zDist = 15f;//minimum distance for the z axis
             float aux = Random.Range(0, (float)Math.Sqrt(MDSquared - xSquared));
-            if (aux > zDist)
+
+            if (aux > zDist)//Comparação para escolher a menor distância segundo a minima distância possivel
                 zDist = aux;
 
+            newX = LastPlatform.x + xDist * mainDir.x;
+            newZ = LastPlatform.z + zDist * mainDir.y;
 
-
-            //Debug.Log("We have z=SQRT(" + MDSquared + "-" + xSquared+"<=>z="+zDist);
-
-            /*if(Random.Range(0,1)==0)
-                xDist = -xDist;
-            if(Random.Range(0,1)==1)
-                zDist = -zDist;
-            Debug.Log("xDist = " + xDist + " zDist = " + zDist);
-            Debug.Log("LastPlatformx&z="+ LastPlatform.x + "," + LastPlatform.z);*/
-
-            //xDist *= mainDir.x;
-            //zDist *= mainDir.y;
-            //Debug.Log("After mainDir multiplication xDist = " + xDist + " zDist = " + zDist);
-            //Debug.Log("xDist = " + xDist + " zDist = " + zDist);
-            //Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
-            //Debug.Log("NewPosition = " + (x + xDist * mainDir.x) + ", " + (y - yDist) + ", " + (z + zDist * mainDir.y));
-            //Debug.Log("Limit Check Starting.... for xMax = " + maxX + " and zMax = " + maxZ);
-            float newX = x + xDist * mainDir.x;
-            float newZ = z + zDist * mainDir.y;
-            if (Math.Abs(newX) > maxX || Math.Abs(newZ) > maxZ)
+            //Verifica se a nova posição está dentro da área de jogo e ajusta a posição caso não esteja
+            if (Math.Abs(newX) > maxHorizontalPosition || Math.Abs(newZ) > maxHorizontalPosition)
             {
                 Vector2 auxDir = mainDir;
-                //Debug.Log("New x = " + newX + " New z = " + newZ);
-                while (Math.Abs(newX) > maxX || Math.Abs(newZ) > maxZ)
+                float offset = 0;
+                while (Math.Abs(newX) > maxHorizontalPosition || Math.Abs(newZ) > maxHorizontalPosition)
                 {
                     mainDir = directions[Random.Range(0, 7)];
+                    //Verifica se a direção escolhida é a oposta à direção anterior
                     if (mainDir == -auxDir)
                     {
-                        //adding a small offset to the new position
-                        newX = x + xDist * mainDir.x + 1.5f;
-                        newZ = z + zDist * mainDir.y + 1.5f;
+                        //creates a small offset to the new position to it doesn't go right under the 2nd Last Platform
+                        offset += 1.5f;
                     }
-                    else
-                    {
-                        newX = x + xDist * mainDir.x;
-                        newZ = z + zDist * mainDir.y;
-                    }
+                    //subtracting so we dont exceed the max distance
+                    newX = LastPlatform.x + (xDist - offset) * mainDir.x;
+                    newZ = LastPlatform.z + (zDist - offset) * mainDir.y;
                 }
             }
-            //xDist *= mainDir.x;
-            /*if (mainDir.x == 0 && mainDir.y == 0)
-            {
-                mainDir.y = Random.Range(0, 1) == 0 ? -1 : 1;
-                if(Math.Abs(z + zDist * mainDir.y) > maxZ)
+
+            //Cria a nova posição para a plataforma
+            nextPosition = new Vector3(newX, LastPlatform.y - yDist, newZ);
+
+            //Verifica se a nova altura é inferior à altura máxima de salto
+            if (nextPosition.y < MaxDistanceVertical)// O que indica que é a última plataforma
+            {//Caso seja, ajustamos as posições de X e Z, para ficarem dentro dos controlos usados para a geração da Maze
+                //A ultima plataformas terá de ficar dentro dos limites do Mapa
+                if (Math.Abs(nextPosition.x) > 45)
                 {
-                    mainDir.y = -mainDir.y;
+                    float DifferenceX = nextPosition.x % 45;
+                    float SignedDifX = DifferenceX - DifferenceX;
+                    nextPosition.x -= SignedDifX;
                 }
-                zDist *= mainDir.y;
-            }*/
-
-
-
-
-            /*mainDir.x = Random.Range(0, 1)==1 ? -1 : 0;
-            xDist *= mainDir.x;
-            if (mainDir.x == 0 && mainDir.y == 0)
-            {
-                mainDir.y = Random.Range(0, 1) == 0 ? -1 : 1;
-                if(Math.Abs(z + zDist * mainDir.y) > maxZ)
+                if (Math.Abs(nextPosition.z) > 45)
                 {
-                    mainDir.y = -mainDir.y;
+                    float DifferenceZ = nextPosition.z % 45;
+                    float SignedDifZ = DifferenceZ - DifferenceZ;
+                    nextPosition.z -= SignedDifZ;
                 }
-                zDist *= mainDir.y;
-            }    
-        }
-        else if(Math.Abs(z+zDist*mainDir.y) > maxZ)
-        {
-            Debug.Log("New z = " + (z + zDist * mainDir.y));
-            mainDir.y = Random.Range(0, 1)==1 ? -1 : 0;
-            zDist *= mainDir.y;
-            //zDist = -zDist;
-            if (mainDir.x == 0 && mainDir.y == 0)
-            {
-                mainDir.x = Random.Range(0, 1) == 0 ? -1 : 1;
-                if (Math.Abs(x + xDist * mainDir.x) > maxX)
+                //E centrada no tile usado para a geração do Maze
+                if (nextPosition.x % 10 != 5 || nextPosition.z % 10 != 5)
                 {
-                    mainDir.x = -mainDir.x;
+                    float DifferenceX = nextPosition.x % 10;
+                    float DifferenceZ = nextPosition.z % 10;
+                    float SignedDifX = 5 - DifferenceX;
+                    float SignedDifZ = 5 - DifferenceZ;
+                    nextPosition.x += SignedDifX;
+                    nextPosition.z += SignedDifZ;
                 }
-                xDist *= mainDir.x;
             }
-        }
-        else
-        {
-            xDist *= mainDir.x;
-            zDist *= mainDir.y;
-        }*/
 
-            /*if(Math.Abs(LastPlatform.x+xDist) > maxX)
-            {
-                x = LastPlatform.x - xDist;
-            }
-            else
-            {
-                x = LastPlatform.x + xDist;
-            }   
-            
-            if(Math.Abs(LastPlatform.z+zDist) > maxZ)
-            {
-                z = LastPlatform.z - zDist;
-            }
-            else
-            {
-                z = LastPlatform.z + zDist;
-            }*/
-
-            //z = Random.Range((float)Math.Sqrt(Math.Pow(MinDistHor, 2) - Math.Pow();//z Distance
-
-
-
-
-
-            //x = Random.Range(/*platforms[PlatformID-1].transform.position.x*/LastPlatform.x - MaxDistanceHorizontal, /*platforms[PlatformID-1].transform.position.x*/LastPlatform.x + MaxDistanceHorizontal);
-            //float zDistance = (float)Math.Sqrt(Math.Pow(MaxDistanceHorizontal, 2) - Math.Pow(x - /*platforms[PlatformID - 1].transform.position.x*/LastPlatform.x, 2));
-            //z = Random.Range(LastPlatform.z - zDistance, LastPlatform.z + zDistance);
-            Vector3 nextPosition = new Vector3(x = newX, y = y - yDist, z = newZ);
-            //Vector3 nextPosition = new Vector3(x = x+xDist, y = y - yDist,z= z+zDist);
-            //Debug.Log("Next position = " + nextPosition.x + ", " + nextPosition.y + ", " + nextPosition.z);
-            //Vector3 nextPosition = new Vector3(x = Random.Range(Math.Max(x - 15, min - 50), Math.Min(x + 15, max - 50)), y = y - dif, z = Random.Range(Math.Max(z - 15, min - 50), Math.Min(z + 15, max - 50)));
-            Instantiate(Platform, nextPosition, Quaternion.identity);
-            //Debug.Log("Next position = " + nextPosition.x + ", " + nextPosition.y + ", " + nextPosition.z);
+            //Saving the position of the new platform
             LastPlatform = nextPosition;
-            PlatformsPositions[PlatformIndex] = LastPlatform;
+            PlatformsPositions.Add(LastPlatform);//[PlatformIndex] = LastPlatform;
             PlatformIndex++;
-            //maxPlatforms--;
-            //Debug.Log("Position of Platform =>  x=" + LastPlatform.x + " y=" + LastPlatform.y + " z=" + LastPlatform.z);
 
-            if (Random.Range(1, 10) <= 2)
+            //Debug.Log("A criar uma plataforma na posição: " + LastPlatform);
+            //40% de chance de mudar de direção
+            if (Random.Range(1, 100) <= 40)
             {
-                //20% de chance de mudar de direção
                 mainDir = directions[Random.Range(0, 7)];
-                //Debug.Log("mainDir= " + mainDir.x + ", " + mainDir.y);
             }
         }
 
-        //As restante, são semi aleatórias
-        //Uma vez que recebem valores aleatórias a uma distância máxima na anterior.
+        Vector3 SecondPlatform = PlatformsPositions[PlatformIndex - 2];
+        Vector3 FirstPlatform = PlatformsPositions[PlatformIndex - 1];
 
 
-        width = size.x; // Largura (eixo X)
-        height = size.y; // Altura (eixo Y)
-        depth = size.z; // Profundidade (eixo Z) 
-        //Debug.Log("Size of Platform =>  x=" + width + " y=" + height + " z=" + depth);
+        //Retira os tiles de teto mais próximos entre a primeira e a segunda plataforma para o jogador conseguir continuar o caminho
+        var colliders = GameObject.FindGameObjectsWithTag("Ceiling").ToList().OrderBy(x => Vector3.Distance(x.transform.position, new Vector3(
+            (SecondPlatform.x + FirstPlatform.x) / 2, (SecondPlatform.y + FirstPlatform.y) / 2, (SecondPlatform.z + FirstPlatform.z) / 2))
+        ).ToList();
+
+        //Desativa os 6 tiles mais próximos encontrados anteriormente
+        for (int i = 0; i < 6; i++)
+        {
+            //Debug.Log("Setting a platform to inactive");
+            colliders[i].SetActive(false);
+        }
+
+        SpawnPlatforms(platformTypes);
+    }
 
 
-        //Creating test platforms
-        /*Vector3 TestPosition1 = new Vector3(0, 2, 0);
-        Instantiate(Platform, TestPosition1, Quaternion.identity);
-        Vector3 TestPosition2 = new Vector3(25f, 5, 0);
-        Instantiate(Platform, TestPosition2, Quaternion.identity);*/
+    private void SpawnPlatforms(PlatformTypes platformTypes)
+    {
+
+
+        for (int i = 0; i < PlatformsPositions.Count - 1; i++)
+        {
+            int PlatformIndex = 0;
+            GameObject First2Plats = platformTypes.basePlatform;
+
+
+            if (i == 0)
+            {
+                Instantiate(platformTypes.endPlatform, PlatformsPositions[i], Quaternion.identity);
+            }
+            else if (i < PlatformsPositions.Count - 2)
+            {
+                switch (UnityEngine.Random.Range(0, 5))
+                {
+                    case 3:
+                        PlatformIndex = 2;
+                        break;
+                    case 4:
+                        PlatformIndex = 3;
+                        break;
+                    case 5:
+                        PlatformIndex = 4;
+                        break;
+                    default:
+                        break;
+                }
+
+                Instantiate(platformTypes.basePlatform, PlatformsPositions[i], Quaternion.identity);
+            }
+            else
+            {
+                //First2Plats.transform.localScale = new Vector3(10, 1, 10);
+
+                GameObject platInstantiate1 = Instantiate(First2Plats, PlatformsPositions[i], Quaternion.identity);
+                GameObject platInstantiate2 = Instantiate(First2Plats, PlatformsPositions[++i], Quaternion.identity);
+
+                platInstantiate1.transform.localScale = new Vector3(10, 1, 10);
+                platInstantiate2.transform.localScale = new Vector3(10, 1, 10);
+            }
+        }
+    }
+
+
+
+    public int GetPlatformIndex()
+    {
+        return PlatformIndex;
     }
 }

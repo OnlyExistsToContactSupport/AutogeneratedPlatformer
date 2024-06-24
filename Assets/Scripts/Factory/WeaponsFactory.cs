@@ -38,11 +38,13 @@ public class WeaponsFactory : ScriptableObject
                 int swordSpawnPoint = Random.Range(0, weaponSpawnPoints.Count);
                 if(weaponChance <= 95)
                 {
-                    Instantiate(Resources.Load("Weapons/Sword"), weaponSpawnPoints[swordSpawnPoint].transform.position, Quaternion.identity);
+                    GameObject sword = Instantiate(Resources.Load("Weapons/Sword"), weaponSpawnPoints[swordSpawnPoint].transform.position, Quaternion.identity) as GameObject;
+                    sword.GetComponent<GrabWeapon>().weaponType = PlayerWeapons.WeaponType.Sword;
                 }
                 else
                 {
-                    Instantiate(Resources.Load("Weapons/Gun"), weaponSpawnPoints[swordSpawnPoint].transform.position, Quaternion.identity);
+                    GameObject gun = Instantiate(Resources.Load("Weapons/Gun"), weaponSpawnPoints[swordSpawnPoint].transform.position, Quaternion.identity) as GameObject;
+                    gun.GetComponent<GrabWeapon>().weaponType = PlayerWeapons.WeaponType.Sword;
                 }
             }
         }

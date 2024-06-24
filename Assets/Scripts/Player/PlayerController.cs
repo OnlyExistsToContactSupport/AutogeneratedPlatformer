@@ -46,8 +46,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("can move: " + canMove);
-        Debug.Log("can jump: " + canJump);
         // Se não estiver a falar com npc ou não estiver em pausa
         if (!DialogueController.isDialogue || Time.timeScale > 0f)
         {
