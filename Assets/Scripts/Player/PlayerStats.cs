@@ -35,7 +35,7 @@ public static class PlayerStats
 
     public static void ResetStats()
     {
-        jumpForce = 16;
+        jumpForce = 15.69f;
         runSpeed = 15;
         walkSpeed = 10;
         health = 1006;

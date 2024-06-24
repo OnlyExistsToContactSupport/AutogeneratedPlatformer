@@ -58,7 +58,7 @@ public class PlatformFactory : ScriptableObject
     private float newX;
     private float newZ;
 
-    public void GeneratePlatforms(PlatformTypes platformTypes, GameObject player)
+    public List<Vector3> GeneratePlatforms(PlatformTypes platformTypes)
     {
         maxStart = 90;//Valores max e min para
         minStart = 80;//a posição inicial da primeira plataforma
@@ -251,6 +251,8 @@ public class PlatformFactory : ScriptableObject
         }
 
         SpawnPlatforms(platformTypes);
+
+        return PlatformsPositions;
     }
 
 

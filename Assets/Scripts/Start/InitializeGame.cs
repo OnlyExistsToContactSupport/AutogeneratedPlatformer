@@ -17,14 +17,15 @@ public class InitializeGame : MonoBehaviour
         // Dá reset ao stats do jogador (exceto os pontos)
         PlayerStats.ResetStats();
 
-        // Gera o jogador
-        PlayerFactory playerFactory = (PlayerFactory)ScriptableObject.CreateInstance(typeof(PlayerFactory));
-        GameObject player = playerFactory.GeneratePlayer();
-
         // Gera as plataformas
         PlatformFactory platforms = (PlatformFactory)ScriptableObject.CreateInstance(typeof(PlatformFactory));
-        platforms.GeneratePlatforms(platformTypes, player);
+        List<Vector3> platformList = platforms.GeneratePlatforms(platformTypes);
 
+        // Gera o jogador
+        PlayerFactory playerFactory = (PlayerFactory)ScriptableObject.CreateInstance(typeof(PlayerFactory));
+        GameObject player = playerFactory.GeneratePlayer(platformList);
+
+        
         // Gera os muros para criar um labirinto no chão e apaga o teto para dar espaço às plataformas
         MazeFactory maze = (MazeFactory)ScriptableObject.CreateInstance(typeof(MazeFactory));
         maze.GenerateMaze(platforms);
