@@ -62,16 +62,18 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Enemy\DragonExample.cs" />
     <Compile Include="Assets\Scripts\NPC\DialogueController.cs" />
-    <Compile Include="Assets\Low Poly Guns\Scripts\GunView.cs" />
+    <Compile Include="Assets\Scripts\Factory\WeaponsFactory.cs" />
     <Compile Include="Assets\Scripts\NPC\Boss.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Platforms\EndPlatformPortal.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Enemy\WaterEnemy.cs" />
+    <Compile Include="Assets\Scripts\Factory\PlayerFactory.cs" />
     <Compile Include="Assets\Scripts\Player\ActiveBuffs.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyHealthBar.cs" />
-    <Compile Include="Assets\Scripts\Player\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyBehaviour.cs" />
     <Compile Include="Assets\Scripts\Enemy\WaterEnemyAttack.cs" />
+    <Compile Include="Assets\Scripts\Factory\PlatformFactory.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Platforms\PlatformType.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttack.cs" />
@@ -80,14 +82,16 @@
     <Compile Include="Assets\Scripts\UI\ScrollEndPlatform.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Player\Interactor.cs" />
-    <Compile Include="Assets\Scripts\Platforms\SpawnPlatforms.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerWeapons.cs" />
     <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Enemy\GroundEnemy.cs" />
-    <Compile Include="Assets\Low Poly Guns\Scripts\GunsMenu.cs" />
+    <Compile Include="Assets\Scripts\Start\InitializeGame.cs" />
+    <Compile Include="Assets\Scripts\Factory\EnemiesFactory.cs" />
     <Compile Include="Assets\Scripts\Enemy\AirEnemy.cs" />
     <Compile Include="Assets\Scripts\Platforms\BakeWalkableSpace.cs" />
+    <Compile Include="Assets\Scripts\Weapons\Bullet.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
+    <Compile Include="Assets\Scripts\Factory\NpcFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

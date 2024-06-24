@@ -26,7 +26,7 @@ public class AirEnemy : MonoBehaviour, IEnemyBehaviour
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         healthBar.TakeDamage(damage);
     }

@@ -169,7 +169,7 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     }
 
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         healthBar.TakeDamage(damage);
     }

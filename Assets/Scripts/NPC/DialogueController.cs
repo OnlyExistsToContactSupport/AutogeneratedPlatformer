@@ -9,7 +9,6 @@ public class DialogueController : MonoBehaviour
 {
     private GameObject dialogueParent;
     private TextMeshProUGUI npcTextBox;
-    private Image textBoxBackground;
     public static bool isDialogue;
     // Start is called before the first frame update
     void Start()
@@ -20,7 +19,6 @@ public class DialogueController : MonoBehaviour
         dialogueParent = Resources.FindObjectsOfTypeAll<GameObject>().ToList().Where(x => x.tag.Equals("DialogueSystem")).FirstOrDefault();
 
         npcTextBox = dialogueParent.GetComponentInChildren<TextMeshProUGUI>();
-        textBoxBackground = dialogueParent.GetComponentInChildren<Image>();
 
         dialogueParent.SetActive(false);
     }

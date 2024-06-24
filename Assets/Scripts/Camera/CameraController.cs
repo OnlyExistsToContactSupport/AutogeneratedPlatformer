@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        Camera.main.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
         firstPerson = false;
 
@@ -51,11 +51,11 @@ public class CameraController : MonoBehaviour
 
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-            transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+            Camera.main.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
 
             player.rotation = Quaternion.Euler(0f, yRotation, 0f);
 
-            transform.position = FirstPersonCameraPosition.position;
+            Camera.main.transform.position = FirstPersonCameraPosition.position;
         }
         else
         {
@@ -67,9 +67,9 @@ public class CameraController : MonoBehaviour
 
             Vector3 Direction = new Vector3(0, 0, -10);
             Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);
-            transform.position = player.position + rotation * Direction;
+            Camera.main.transform.position = player.position + rotation * Direction;
 
-            transform.LookAt(player.position);
+            Camera.main.transform.LookAt(player.position);
 
             player.rotation = Quaternion.Euler(0f, yRotation, 0f);
 

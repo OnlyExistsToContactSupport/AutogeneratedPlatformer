@@ -8,13 +8,51 @@ public static class PlayerStats
     // Adicionar pontos
     // Adicionar munições e armas
 
-    public static float forçaDeSalto = 0f;
-    public static float velocidade = 0f;
-    public static float vida = 0f;
-    public static float dano = 0f;
-    public static float munição = 0f;
-    public static bool chanceNaoGastarMunição = false;
+    // Jogador
+    public static float jumpForce;
+    public static float runSpeed;
+    public static float walkSpeed;
+    public static float health;
+    public static float punchDamage;
+    public static float swordDamage;
+    public static float gunDamage;
+    public static float bullets;
+    public static bool hasInfiniteAmmo;
+    public static bool hasChanceToNotSpendAmmo;
+    public static int ammoCost;
 
-    public static int pontos = 0;
+    public static int currentLevel;
 
+    // Inicializado aqui para não levar reset
+    public static int points = 0;
+
+    // Controls
+    public static int sensitivity;
+    public static KeyCode interactKey;
+    public static KeyCode jumpKey;
+    public static KeyCode runKey;
+    public static KeyCode attackKey;
+
+    public static void ResetStats()
+    {
+        jumpForce = 15;
+        runSpeed = 15;
+        walkSpeed = 10;
+        health = 1006;
+        punchDamage = 100;
+        swordDamage = 250;
+        gunDamage = 400;
+        bullets = 0;
+        hasInfiniteAmmo = false;
+        hasChanceToNotSpendAmmo = false;
+        ammoCost = 1;
+
+        currentLevel = 1;
+
+        sensitivity = 400;
+        interactKey = KeyCode.E;
+        jumpKey = KeyCode.Space;
+        runKey = KeyCode.LeftShift;
+        attackKey = KeyCode.Mouse0;
+    }
 }

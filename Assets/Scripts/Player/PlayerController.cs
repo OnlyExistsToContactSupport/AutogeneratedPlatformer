@@ -4,19 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed;
 
     public float groundDrag;
 
-    public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
-
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
-
-    public KeyCode jumpKey = KeyCode.Space;
+    private bool isRunning;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -47,10 +41,13 @@ public class PlayerController : MonoBehaviour
 
         readyToJump = true;
         canMove = true;
+        isRunning = false;
     }
 
     private void Update()
     {
+        Debug.Log("can move: " + canMove);
+        Debug.Log("can jump: " + canJump);
         // Se não estiver a falar com npc ou não estiver em pausa
         if (!DialogueController.isDialogue || Time.timeScale > 0f)
         {
@@ -101,8 +98,14 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+        // Correr
+        if (Input.GetKeyDown(PlayerStats.runKey))
+            isRunning = true;
+        else if(Input.GetKeyUp(PlayerStats.runKey))
+            isRunning = false;
+
         // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && canJump)
+        if (Input.GetKey(PlayerStats.jumpKey) && readyToJump && canJump)
         {
             readyToJump = false;
 
@@ -117,24 +120,51 @@ public class PlayerController : MonoBehaviour
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        // on ground
-        if (canJump)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        if(isRunning)
+        {
+            // on ground
+            if (canJump)
+                rb.AddForce(moveDirection.normalized * PlayerStats.runSpeed * 10f, ForceMode.Force);
 
-        // in air
-        else if (!canJump)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            // in air
+            else if (!canJump)
+                rb.AddForce(moveDirection.normalized * PlayerStats.runSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        }
+        else
+        {
+            // on ground
+            if (canJump)
+                rb.AddForce(moveDirection.normalized * PlayerStats.walkSpeed * 10f, ForceMode.Force);
+
+            // in air
+            else if (!canJump)
+                rb.AddForce(moveDirection.normalized * PlayerStats.walkSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        }
     }
 
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        // limit velocity if needed
-        if (flatVel.magnitude > moveSpeed)
+        if (isRunning)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            // limit velocity if needed
+            if (flatVel.magnitude > PlayerStats.runSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * PlayerStats.runSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
+        }
+        else
+        {
+            // limit velocity if needed
+            if (flatVel.magnitude > PlayerStats.walkSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * PlayerStats.walkSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
         }
     }
 
@@ -143,7 +173,7 @@ public class PlayerController : MonoBehaviour
         // reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(transform.up * PlayerStats.jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
     {

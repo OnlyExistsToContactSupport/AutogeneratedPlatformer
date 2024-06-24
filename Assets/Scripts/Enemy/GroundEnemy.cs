@@ -162,7 +162,7 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
     {
         hasAttacked = false;
     }
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         healthBar.TakeDamage(damage);
     }

@@ -36,6 +36,8 @@ public class EnemyHealthBar : MonoBehaviour
         if (healthBarPosition != null)
             transform.position = healthBarPosition.position + offset;
 
+        CheckDeath();
+
     }
 
     public void SetMaxHealth(float value)
@@ -44,7 +46,7 @@ public class EnemyHealthBar : MonoBehaviour
         currentHealth = value;
     }
 
-    public void TakeDamage(float dano)
+    public void TakeDamage(int dano)
     {
         // Dano é dado como percentagem
 
@@ -54,5 +56,14 @@ public class EnemyHealthBar : MonoBehaviour
 
         healthBar.value = currentHealth / maxHealth;
     }
+    public void CheckDeath()
+    {
+        if(currentHealth <= 0)
+        {
+            Debug.Log("Parent: " + transform.parent.parent.name);
+            transform.parent.parent.GetComponent<Animator>().SetBool("isDead", true);
 
+            Destroy(transform.parent.parent.gameObject, 5f);
+        }
+    }
 }

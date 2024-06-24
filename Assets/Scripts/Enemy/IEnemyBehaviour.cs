@@ -9,6 +9,6 @@ public interface IEnemyBehaviour
     public void Patrol();
     public void ChasePlayer();
     public void AttackPlayer();
-    public void TakeDamage(float damage);
+    public void TakeDamage(int damage);
     public void DealDamage();
 }
