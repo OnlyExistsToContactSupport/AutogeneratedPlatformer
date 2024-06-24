@@ -63,7 +63,7 @@ public class PlatformFactory : ScriptableObject
         maxStart = 90;//Valores max e min para
         minStart = 80;//a posição inicial da primeira plataforma
 
-        maxHorizontalPosition = 55f;//Valor máximo para as coordenadas x e z para a plataforma ficar dentro da àrea de jogo
+        maxHorizontalPosition = 50f;//Valor máximo para as coordenadas x e z para pelo menos parte da plataforma ficar dentro da àrea de jogo
         MaxDistanceHorizontal = 20f;//Distância máxima horizontal de salto
         MaxDistanceVertical = 7.4f;//Distância máxima vertical de salto
 
@@ -256,13 +256,9 @@ public class PlatformFactory : ScriptableObject
 
     private void SpawnPlatforms(PlatformTypes platformTypes)
     {
-
-
         for (int i = 0; i < PlatformsPositions.Count - 1; i++)
         {
-            int PlatformIndex = 0;
             GameObject First2Plats = platformTypes.basePlatform;
-
 
             if (i == 0)
             {
@@ -270,22 +266,21 @@ public class PlatformFactory : ScriptableObject
             }
             else if (i < PlatformsPositions.Count - 2)
             {
+                GameObject platform;
                 switch (UnityEngine.Random.Range(0, 5))
                 {
                     case 3:
-                        PlatformIndex = 2;
+                        platform = platformTypes.firePlatform;
                         break;
                     case 4:
-                        PlatformIndex = 3;
-                        break;
-                    case 5:
-                        PlatformIndex = 4;
+                        platform = platformTypes.grassPlatform;
                         break;
                     default:
+                        platform = platformTypes.basePlatform;
                         break;
                 }
 
-                Instantiate(platformTypes.basePlatform, PlatformsPositions[i], Quaternion.identity);
+                Instantiate(platform, PlatformsPositions[i], Quaternion.identity);
             }
             else
             {

@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     private bool canJump;
+    private bool isGrounded;
+
 
     public Transform orientation;
 
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     public bool canMove;
 
+    private Vector3 LandingPosition;
 
     private void Start()
     {
@@ -42,6 +45,7 @@ public class PlayerController : MonoBehaviour
         readyToJump = true;
         canMove = true;
         isRunning = false;
+        isGrounded = true;
     }
 
     private void Update()
@@ -70,10 +74,23 @@ public class PlayerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+        CheckCanJump();
+    }
+    private void CheckCanJump()
+    {
+        if (LandingPosition.y == transform.position.y && isGrounded)
+        {
+            canJump = true;
+        }
+        else
+        {
+            LandingPosition.y = transform.position.y;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        LandingPosition = transform.position;
         // Toca no chão
         if (other.tag.Equals("Ground") || other.tag.Equals("Platform"))
         {
@@ -87,6 +104,7 @@ public class PlayerController : MonoBehaviour
         if (other.tag.Equals("Ground") || other.tag.Equals("Platform"))
         {
             canJump = false;
+            isGrounded = false;
         }
     }
 
