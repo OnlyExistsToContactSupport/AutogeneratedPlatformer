@@ -9,43 +9,29 @@ public class PlayerController : MonoBehaviour
 
     public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
     private bool isRunning;
+    private bool jumpedOffWall;
 
     [Header("Ground Check")]
     public float playerHeight;
-    private bool canJump;
-    private bool isGrounded;
-
 
     public Transform orientation;
 
-    private float horizontalInput;
-    private float verticalInput;
-
-    private Vector3 moveDirection;
-
-    private Rigidbody rb;
-
-    private Animator animator;
-
     public bool canMove;
 
-    private Vector3 LandingPosition;
+    private CharacterController characterController;
+    private Vector3 gravity;
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-        rb.freezeRotation = true;
+        characterController = GetComponent<CharacterController>();
 
-        readyToJump = true;
         canMove = true;
         isRunning = false;
-        isGrounded = true;
+        jumpedOffWall = false;
     }
 
     private void Update()
@@ -56,144 +42,67 @@ public class PlayerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            if(canMove) {
-                ProcessInput();
-                SpeedControl();
-                MovePlayer();
+            // Efeito da gravidade
+            gravity.y -= 9.8f * Time.deltaTime;
+            characterController.Move(gravity * Time.deltaTime);
 
-                // handle drag
-                if (canJump)
-                    rb.drag = groundDrag;
-                else
-                    rb.drag = 0; 
-            }
-
+            MovePlayer();
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        CheckCanJump();
-    }
-    private void CheckCanJump()
-    {
-        if (LandingPosition.y == transform.position.y && isGrounded)
-        {
-            canJump = true;
-        }
-        else
-        {
-            LandingPosition.y = transform.position.y;
-        }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        LandingPosition = transform.position;
-        // Toca no chão
-        if (other.tag.Equals("Ground") || other.tag.Equals("Platform"))
-        {
-            canJump = true;
-        }
-    }
-
-    // Não toca no chão
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag.Equals("Ground") || other.tag.Equals("Platform"))
-        {
-            canJump = false;
-            isGrounded = false;
-        }
-    }
-
-
-    private void ProcessInput()
-    {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-        // Correr
-        if (Input.GetKeyDown(PlayerStats.runKey))
-            isRunning = true;
-        else if(Input.GetKeyUp(PlayerStats.runKey))
-            isRunning = false;
-
-        // when to jump
-        if (Input.GetKey(PlayerStats.jumpKey) && readyToJump && canJump)
-        {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-    }
 
     private void MovePlayer()
     {
-        // calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-        if(isRunning)
+        if(canMove)
         {
-            // on ground
-            if (canJump)
-                rb.AddForce(moveDirection.normalized * PlayerStats.runSpeed * 10f, ForceMode.Force);
+            Vector3 playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxis("Vertical")); ;
+            Vector3 playerPosition = transform.TransformDirection(playerMovement);
 
-            // in air
-            else if (!canJump)
-                rb.AddForce(moveDirection.normalized * PlayerStats.runSpeed * 10f * airMultiplier, ForceMode.Force);
+            if (characterController.isGrounded)
+            {
+                // Quando está no chão, já pode voltar a saltar da parede
+                jumpedOffWall = false;
 
-        }
-        else
-        {
-            // on ground
-            if (canJump)
-                rb.AddForce(moveDirection.normalized * PlayerStats.walkSpeed * 10f, ForceMode.Force);
+                // Correr
+                if (Input.GetKeyDown(PlayerStats.runKey))
+                {
+                    isRunning = true;
 
-            // in air
-            else if (!canJump)
-                rb.AddForce(moveDirection.normalized * PlayerStats.walkSpeed * 10f * airMultiplier, ForceMode.Force);
+                }
+                else if (Input.GetKeyUp(PlayerStats.runKey))
+                {
+                    isRunning = false;
+                }
+
+                // Saltar
+                if (Input.GetKey(PlayerStats.jumpKey))
+                {
+                    gravity.y = PlayerStats.jumpForce;
+                }
+            }
+
+
+            characterController.Move(playerPosition * (isRunning? PlayerStats.runSpeed : PlayerStats.walkSpeed ) * Time.deltaTime);
 
         }
     }
-
-    private void SpeedControl()
+    private void OnTriggerStay(Collider other)
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        if (isRunning)
+        if (other.tag.Equals("Wall"))
         {
-            // limit velocity if needed
-            if (flatVel.magnitude > PlayerStats.runSpeed)
+            if (Input.GetKey(PlayerStats.jumpKey))
             {
-                Vector3 limitedVel = flatVel.normalized * PlayerStats.runSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-            }
-        }
-        else
-        {
-            // limit velocity if needed
-            if (flatVel.magnitude > PlayerStats.walkSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * PlayerStats.walkSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+                if(!jumpedOffWall)
+                {
+                    gravity.y = PlayerStats.jumpForce;
+                    jumpedOffWall = true;
+                }
             }
         }
     }
-
-    private void Jump()
-    {
-        // reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        rb.AddForce(transform.up * PlayerStats.jumpForce, ForceMode.Impulse);
-    }
-    private void ResetJump()
-    {
-        readyToJump = true;
-    }
-
 }

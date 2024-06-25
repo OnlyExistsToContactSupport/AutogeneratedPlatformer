@@ -388,11 +388,13 @@
 "Assets/Scripts/Player/PlayerStats.cs"
 "Assets/Scripts/Player/PlayerWeapons.cs"
 "Assets/Scripts/Start/InitializeGame.cs"
+"Assets/Scripts/Start/StartMenu.cs"
 "Assets/Scripts/UI/HealthBar.cs"
 "Assets/Scripts/UI/PauseMenu.cs"
 "Assets/Scripts/UI/ScrollEndPlatform.cs"
 "Assets/Scripts/UI/ScrollingUVs.cs"
 "Assets/Scripts/Weapons/Bullet.cs"
+"Assets/Scripts/Weapons/GrabWeapon.cs"
 -langversion:9.0
 
 /deterministic

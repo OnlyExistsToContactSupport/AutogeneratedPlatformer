@@ -6,9 +6,18 @@ using UnityEngine;
 
 public class WalkableSpaceBakery : MonoBehaviour
 {
+    private NavMeshSurface navMeshSurface;
     public void Bake()
     {
         gameObject.AddComponent<NavMeshSurface>();
-        gameObject.GetComponent<NavMeshSurface>().BuildNavMesh();
+        navMeshSurface = gameObject.GetComponent<NavMeshSurface>();
+        navMeshSurface.BuildNavMesh();
+    }
+    public void UnBake()
+    {
+        if (navMeshSurface != null)
+        {
+            gameObject.GetComponent<NavMeshSurface>().RemoveData();
+        }
     }
 }

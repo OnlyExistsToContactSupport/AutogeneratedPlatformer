@@ -4,25 +4,14 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    /* Melee attacks
-     * 
-     * Punch - 5% damage
-     * Sword - 25% damage
-     * Gun - 50% damage
-     * 
-     */
-
     private GameObject enemy;
     private string enemyTag;
     private bool HasAttacked;
     public float bulletSpeed;
 
 
-
-
     private Animator animator;
     private HealthBar playerHealthBar;
-    private Rigidbody rb;
 
     private float horizontalInput;
     private float verticalInput;
@@ -41,7 +30,6 @@ public class PlayerAttack : MonoBehaviour
 
         animator = GetComponent<Animator>();
         playerHealthBar = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>();
-        rb = GetComponent<Rigidbody>();
         player = GetComponent<PlayerController>();
     }
 

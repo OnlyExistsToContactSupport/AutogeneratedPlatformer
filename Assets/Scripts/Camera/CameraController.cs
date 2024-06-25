@@ -37,6 +37,11 @@ public class CameraController : MonoBehaviour
         {
             MoveCamera();
         }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
     private void MoveCamera()
     {

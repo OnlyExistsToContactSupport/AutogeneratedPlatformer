@@ -15,16 +15,16 @@ public class Interactor : MonoBehaviour
 
     private void Start()
     {
-        distance = 5f;
+        distance = 10f;
     }
     // Código para interagir com múltiplos objetos, implementados em cada um deles
     void Update()
     {
-        Ray ray = new Ray(source.position, source.forward);
-        Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
-
         if (Input.GetKeyDown(PlayerStats.interactKey))
         {
+            Ray ray = new Ray(source.position, source.forward);
+            Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
+
             if(Physics.Raycast(ray, out RaycastHit hit, distance))
             {
                 if(hit.collider.gameObject.TryGetComponent(out Interactable obj))

@@ -14,7 +14,6 @@ public class MazeFactory : ScriptableObject
     private Vector3 FirstPosition;
     private Vector2Int start;
     private Vector2Int end;
-    private Vector3 NextPosition;
     private Vector2Int[] directions;
 
     private List<Vector2Int> MazePath;
@@ -23,7 +22,8 @@ public class MazeFactory : ScriptableObject
     private int mazeHeight;
 
     private Cell[,] grid;
-    private int[,] test;
+
+    private List<GameObject> paredes;
 
     public class Cell
     {
@@ -43,6 +43,8 @@ public class MazeFactory : ScriptableObject
     }
     public void GenerateMaze(PlatformFactory spawner)
     {
+        paredes = new List<GameObject>();
+
         ParedeZ = Resources.Load("Walls/Wall_Z", typeof(GameObject)) as GameObject;
         ParedeX = Resources.Load("Walls/Wall_X", typeof(GameObject)) as GameObject;
 
@@ -51,7 +53,6 @@ public class MazeFactory : ScriptableObject
         SecondLast = new Vector3(0, 0, 0);
         FirstPosition = new Vector3(0, 0, 0);
         LastPosition = new Vector3(0, 0, 0);
-        NextPosition = new Vector3(0, 0, 0);
         directions = new Vector2Int[]
         {
             new Vector2Int(0, 1), // Top
@@ -187,11 +188,11 @@ public class MazeFactory : ScriptableObject
         {
             if (WallPositions[i].x % 10 == 0)
             {
-                Instantiate(ParedeZ, WallPositions[i], Quaternion.identity);
+                paredes.Add(Instantiate(ParedeZ, WallPositions[i], Quaternion.identity));
             }
             else
             {
-                Instantiate(ParedeX, WallPositions[i], Quaternion.identity);
+                paredes.Add(Instantiate(ParedeX, WallPositions[i], Quaternion.identity));
             }
 
         }
@@ -419,5 +420,12 @@ public class MazeFactory : ScriptableObject
             }
         }
 
+    }
+    public void DestroyMaze()
+    {
+        for (int i = 0; i < paredes.Count; i++)
+        {
+            Destroy(paredes[i]);
+        }
     }
 }

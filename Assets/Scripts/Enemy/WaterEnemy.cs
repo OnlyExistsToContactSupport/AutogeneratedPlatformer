@@ -15,7 +15,6 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     private bool hasAttacked;
     private bool hasStoodUp;
 
-
     // Animações
     private Animator animator;
 
@@ -24,7 +23,6 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindWithTag("Player").transform;
         isPlayerInRange = false;
 
         hasAttacked = false;
@@ -52,9 +50,11 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
             AttackPlayer();
         }
     }
-
+    public void SetPlayer(GameObject playerObject)
+    {
+        player = playerObject.transform;
+    }
     // O Patrol do WaterEnemy é uma meditação que o faz ver tudo à sua volta
-
     public void Patrol()
     {
         isPlayerInRange = CanSeePlayer();
@@ -146,6 +146,9 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
     // Olhar para o player
     public void ChasePlayer()
     {
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+
         // Calculate the direction to the player
         Vector3 direction = player.position - transform.position;
 
@@ -162,10 +165,9 @@ public class WaterEnemy : MonoBehaviour, IEnemyBehaviour
             transform.rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
         }
     }
-    // Chamado pelo ataque do inimigo (script à parte)
     public void DealDamage()
     {
-        GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(EnemyDamage.waterEnemyDamage);
+        // Chamado pelo ataque do inimigo (script à parte)
     }
 
 

@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerFactory : ScriptableObject 
 {
-    public GameObject GeneratePlayer()
+    public GameObject GeneratePlayer(List<Vector3> platformList)
     {
-        // Dar spawn ao jogador num dos cantos
-        Vector3 position = new Vector3(Random.Range(0, 100) <= 50 ? 45 : -45,
-                                        0,
-                                        Random.Range(0, 100) <= 50 ? 45 : -45
-                                        );
 
-        GameObject player = Instantiate(Resources.Load("Player/Player") as GameObject, position, Quaternion.identity);
+        Vector3 lowestPlatform = platformList[platformList.Count-1];
+        Vector3 playerSpawn = new Vector3(45 * - Math.Sign(lowestPlatform.x), 0, 45 * - Math.Sign(lowestPlatform.z));
+        
+
+        GameObject player = Instantiate(Resources.Load("Player/Player") as GameObject, playerSpawn, Quaternion.identity);
+
         player.transform.LookAt(new Vector3(0f, 0f, 0f));
+        if(Camera.main != null)
+            Camera.main.transform.LookAt(new Vector3(0f, 0f, 0f));
 
         return player;
     }

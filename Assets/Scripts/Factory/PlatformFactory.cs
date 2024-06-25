@@ -36,6 +36,7 @@ public class PlatformFactory : ScriptableObject
 
     //Variável para guardar as posições das plataformas
     public List<Vector3> PlatformsPositions;
+    private List<GameObject> platforms;
 
     //Variáveis para o controlo do número de plataformas
     private int PlatformIndex;
@@ -57,9 +58,12 @@ public class PlatformFactory : ScriptableObject
 
     private float newX;
     private float newZ;
+    private List<GameObject> ceilings;
 
-    public void GeneratePlatforms(PlatformTypes platformTypes, GameObject player)
+    public List<Vector3> GeneratePlatforms(PlatformTypes platformTypes)
     {
+        platforms = new List<GameObject>();
+
         maxStart = 90;//Valores max e min para
         minStart = 80;//a posição inicial da primeira plataforma
 
@@ -239,7 +243,7 @@ public class PlatformFactory : ScriptableObject
 
 
         //Retira os tiles de teto mais próximos entre a primeira e a segunda plataforma para o jogador conseguir continuar o caminho
-        var colliders = GameObject.FindGameObjectsWithTag("Ceiling").ToList().OrderBy(x => Vector3.Distance(x.transform.position, new Vector3(
+        ceilings = GameObject.FindGameObjectsWithTag("Ceiling").ToList().OrderBy(x => Vector3.Distance(x.transform.position, new Vector3(
             (SecondPlatform.x + FirstPlatform.x) / 2, (SecondPlatform.y + FirstPlatform.y) / 2, (SecondPlatform.z + FirstPlatform.z) / 2))
         ).ToList();
 
@@ -247,12 +251,25 @@ public class PlatformFactory : ScriptableObject
         for (int i = 0; i < 6; i++)
         {
             //Debug.Log("Setting a platform to inactive");
-            colliders[i].SetActive(false);
+            ceilings[i].SetActive(false);
         }
 
         SpawnPlatforms(platformTypes);
-    }
 
+        return PlatformsPositions;
+    }
+    public void ResetCeilings()
+    {
+        if(ceilings != null)
+        {
+            if(ceilings.Count > 0) { 
+                for (int i = 0; i < ceilings.Count; i++)
+                {
+                    ceilings[i].SetActive(true);
+                }
+            }
+        }
+    }
 
     private void SpawnPlatforms(PlatformTypes platformTypes)
     {
@@ -262,7 +279,7 @@ public class PlatformFactory : ScriptableObject
 
             if (i == 0)
             {
-                Instantiate(platformTypes.endPlatform, PlatformsPositions[i], Quaternion.identity);
+                platforms.Add(Instantiate(platformTypes.endPlatform, PlatformsPositions[i], Quaternion.identity));
             }
             else if (i < PlatformsPositions.Count - 2)
             {
@@ -280,7 +297,7 @@ public class PlatformFactory : ScriptableObject
                         break;
                 }
 
-                Instantiate(platform, PlatformsPositions[i], Quaternion.identity);
+                platforms.Add(Instantiate(platform, PlatformsPositions[i], Quaternion.identity));
             }
             else
             {
@@ -291,10 +308,19 @@ public class PlatformFactory : ScriptableObject
 
                 platInstantiate1.transform.localScale = new Vector3(10, 1, 10);
                 platInstantiate2.transform.localScale = new Vector3(10, 1, 10);
+
+                platforms.Add(platInstantiate1);
+                platforms.Add(platInstantiate2);
             }
         }
     }
-
+    public void DestroyPlatforms()
+    {
+        for (int i = 0; i < platforms.Count - 1; i++)
+        {
+            Destroy(platforms[i]);
+        }
+    }
 
 
     public int GetPlatformIndex()

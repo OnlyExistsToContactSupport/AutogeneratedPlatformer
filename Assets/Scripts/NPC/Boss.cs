@@ -56,33 +56,38 @@ public class Boss : MonoBehaviour, Interactable
 
             buff = ActiveBuffs.GenerateBuff();
 
-            dialogueController.GetMessage(buff);
-
             int buffValue = (int)buff;
 
             // Instanciar efeito
             if (buffValue <= 5)
             {
                 if (goodBuffEffect != null)
-                    Instantiate(goodBuffEffect, transform.position, Quaternion.identity);
+                {
+                    GameObject effect = Instantiate(goodBuffEffect, transform.position, Quaternion.identity);
+                    effect.transform.SetParent(gameObject.transform, false);
+                }
 
             }
             else if (buffValue >= 6 && buffValue <= 10)
             {
                 if (randomBuffEffect != null)
-                    Instantiate(randomBuffEffect, transform.position, Quaternion.identity);
+                {
+                    GameObject effect = Instantiate(randomBuffEffect, transform.position, Quaternion.identity);
+                    effect.transform.SetParent(gameObject.transform, false);
+                }
 
             }
             else // value > 10
             {
                 if (debuffEffect != null)
-                    Instantiate(debuffEffect, transform.position, Quaternion.identity);
+                {
+                    GameObject effect = Instantiate(debuffEffect, transform.position, Quaternion.identity);
+                    effect.transform.SetParent(gameObject.transform, false);
+                }
 
             }
         }
-        else
-        {
-            dialogueController.GetMessage(buff);
-        }
+
+        dialogueController.GetMessage(buff);
     }
 }

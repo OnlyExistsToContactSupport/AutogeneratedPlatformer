@@ -21,9 +21,8 @@ public static class PlayerStats
     public static bool hasChanceToNotSpendAmmo;
     public static int ammoCost;
 
-    public static int currentLevel;
-
-    // Inicializado aqui para não levar reset
+    // Inicializados aqui para não levar reset
+    public static int currentLevel = 1;
     public static int points = 0;
 
     // Controls
@@ -35,7 +34,7 @@ public static class PlayerStats
 
     public static void ResetStats()
     {
-        jumpForce = 16;
+        jumpForce = 15f;
         runSpeed = 15;
         walkSpeed = 10;
         health = 1006;
@@ -46,8 +45,6 @@ public static class PlayerStats
         hasInfiniteAmmo = false;
         hasChanceToNotSpendAmmo = false;
         ammoCost = 1;
-
-        currentLevel = 1;
 
         sensitivity = 400;
         interactKey = KeyCode.E;

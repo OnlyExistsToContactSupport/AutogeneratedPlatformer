@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class EndPlatformPortal : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    // Quando o player entra no portal final
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (other.tag.Equals("Player"))
+        {
+            // Aumentar o nível de jogo
+            PlayerStats.currentLevel += 1;
+            // Ganha 100 pontos por chegar ao fim
+            PlayerStats.points += 100;
+            GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InitializeGame>().ResetGame();
+        }
     }
 }

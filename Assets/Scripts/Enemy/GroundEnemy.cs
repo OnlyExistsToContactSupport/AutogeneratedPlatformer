@@ -54,7 +54,6 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
         currentWaypointPosition = waypoints[waypointIndex].position;
         navMeshAgent.SetDestination(currentWaypointPosition);
 
-        player = GameObject.FindWithTag("Player").transform;
         isPlayerInSightRange = false;
         isPlayerInAttackRange = false;
 
@@ -95,7 +94,10 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
             AttackPlayer();
         }
     }
-
+    public void SetPlayer(GameObject playerObject)
+    {
+        player = playerObject.transform;
+    }
     private void UpdateDestination()
     {
         currentWaypointPosition = waypoints[waypointIndex].position;
@@ -131,6 +133,7 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
 
     public void ChasePlayer()
     {
+        Debug.Log(player);
         animator.SetBool("isWalking", false);
         animator.SetBool("isRunning", true);
 
@@ -191,6 +194,10 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
                     if (distanceToTarget < sightRange)
                     {
                         playerFound = true;
+
+                        if (player == null)
+                            player = collider.transform;
+
                         break;
                     }
                 }
@@ -199,6 +206,7 @@ public class GroundEnemy: MonoBehaviour, IEnemyBehaviour
         }
 
         isPlayerInSightRange = playerFound;
+
     }
 
     // Chamado pela animação

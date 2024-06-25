@@ -30,6 +30,7 @@ public class DialogueController : MonoBehaviour
     }
     public void GetMessage(ActiveBuffs.BuffType buff)
     {
+        Time.timeScale = 0f;
         isDialogue = true;
         string dialogue;
 
@@ -42,7 +43,7 @@ public class DialogueController : MonoBehaviour
                 dialogue = "Obtiveste a habilidade de poder correr mais rápido. Aproveita!";
                 break;
             case ActiveBuffs.BuffType.CurarVida:
-                dialogue = "Os deuses decidiram que a tua saúde é importante. A tua vida irá ser reposta a 100%";
+                dialogue = "Os deuses decidiram que a tua saúde é importante. A tua vida foi reposta a 100%";
                 break;
             case ActiveBuffs.BuffType.MaiorDano:
                 dialogue = "Obtiveste a habilidade de dar mais dano. Os teus inimigos irão cair mais facilmente.";
@@ -81,17 +82,17 @@ public class DialogueController : MonoBehaviour
         npcTextBox.text = dialogue;
         dialogueParent.SetActive(true);
     }
-    public void SkipMessage(bool buttonDown)
+    // Pode dar skip ao interagir ou chamar diretamente ao carregar no botão que aparece
+    public void SkipMessage()
     {
-        Debug.Log("Skip botão: " + buttonDown);
         isDialogue = false;
         npcTextBox.text = "";
         dialogueParent.SetActive(false);
-
+        Time.timeScale = 1f;
     }
     private void CheckSkipMessage()
     {
-        if (isDialogue && Input.GetKeyDown(KeyCode.E))
-            SkipMessage(false);
+        if (isDialogue && Input.GetKeyDown(PlayerStats.interactKey))
+            SkipMessage();
     }
 }

@@ -106,13 +106,13 @@ public static class ActiveBuffs
 
                 case BuffType.MenorVelocidade:
                     // Diminui a velocidade do jogador
-                    PlayerStats.walkSpeed -= 5;
-                    PlayerStats.runSpeed -= 5;
+                    PlayerStats.runSpeed = PlayerStats.walkSpeed;
                     break;
 
                 case BuffType.PerderVida:
                     // Faz o jogador perder vida em percentagem - 10%
-                    GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamageInPercentage(10);
+                    HealthBar playerHealth = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>();
+                    playerHealth.TakeDamageInPercentage(playerHealth.sizeMax / 2);
                     break;
 
                 case BuffType.MenorDano:
