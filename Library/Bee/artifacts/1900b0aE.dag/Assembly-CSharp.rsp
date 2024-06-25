@@ -408,6 +408,8 @@
 "Assets/Scripts/UI/PauseMenu.cs"
 "Assets/Scripts/UI/ScrollEndPlatform.cs"
 "Assets/Scripts/UI/ScrollingUVs.cs"
+"Assets/Scripts/UI/SettingsMenu.cs"
+"Assets/Scripts/UI/StartMenu.cs"
 "Assets/Scripts/Weapons/Bullet.cs"
 "Assets/Scripts/Weapons/GrabWeapon.cs"
 -langversion:9.0

@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\NPC\DialogueController.cs" />
     <Compile Include="Assets\Scripts\Factory\WeaponsFactory.cs" />
     <Compile Include="Assets\Scripts\Platforms\AnimatePlatform.cs" />
+    <Compile Include="Assets\Scripts\UI\SettingsMenu.cs" />
     <Compile Include="Assets\Scripts\NPC\Boss.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
     <Compile Include="Assets\Scripts\Platforms\EndPlatformPortal.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyDamage.cs" />
     <Compile Include="Assets\Scripts\Factory\BakeryFactory.cs" />
     <Compile Include="Assets\Scripts\UI\ScrollingUVs.cs" />
+    <Compile Include="Assets\Scripts\UI\StartMenu.cs" />
     <Compile Include="Assets\Scripts\UI\ScrollEndPlatform.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Player\Interactor.cs" />
